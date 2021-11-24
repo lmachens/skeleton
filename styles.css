@@ -1,0 +1,8 @@
+body {
+  background: #faf9fa;
+  color: rgb(0, 134, 90);
+}
+
+.app-header {
+  -webkit-app-region: drag;
+}
