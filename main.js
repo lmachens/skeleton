@@ -25,14 +25,14 @@ const createWindow = () => {
       overrideBrowserWindowOptions: {
         width: website.width,
         height: website.height,
-        webPreferences: {
-          webgl: true,
-        },
         frame: website.frame,
         movable: website.movable,
         resizable: website.resizable,
         transparent: website.transparent,
         alwaysOnTop: website.alwaysOnTop,
+        autoHideMenuBar: true,
+        maximizable: website.frame,
+        fullscreenable: website.frame,
       },
     };
   });
