@@ -6,7 +6,6 @@ const { remote } = require("electron");
 window.addEventListener("DOMContentLoaded", () => {
   const websitesElement = document.querySelector(".websites");
   const addElement = document.querySelector(".add");
-  const closeElement = document.querySelector(".close");
 
   const websites = getWebsites();
   const websiteElements = websites.map(createWebsiteElement);
@@ -20,10 +19,5 @@ window.addEventListener("DOMContentLoaded", () => {
       formElement.remove();
     });
     document.body.append(formElement);
-  };
-
-  closeElement.onclick = () => {
-    const win = remote.getCurrentWindow();
-    win.close();
   };
 });
