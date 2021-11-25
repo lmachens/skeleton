@@ -1,21 +1,29 @@
-const createWebsiteCardElement = (url) => {
-  const articleElement = document.createElement("article");
-  articleElement.className = "card";
-  articleElement.innerText = url;
-  return articleElement;
-};
-
-const openWebsite = (url) => {
-  window.open(url, "_blank", "width=300,height=300");
-};
+const { createFormModalElement } = require("./lib/formModalElement");
+const { getWebsites, addWebsite } = require("./lib/storage");
+const { createWebsiteElement } = require("./lib/websiteElement");
+const { remote } = require("electron");
 
 window.addEventListener("DOMContentLoaded", () => {
-  const formElement = document.querySelector(".insert");
   const websitesElement = document.querySelector(".websites");
+  const addElement = document.querySelector(".add");
+  const closeElement = document.querySelector(".close");
 
-  formElement.onsubmit = (event) => {
-    event.preventDefault();
-    openWebsite(event.target.elements.url.value);
-    createWebsiteCardElement();
+  const websites = getWebsites();
+  const websiteElements = websites.map(createWebsiteElement);
+  websitesElement.append(...websiteElements);
+
+  addElement.onclick = () => {
+    const formElement = createFormModalElement({}, (website) => {
+      addWebsite(website);
+      const websiteElement = createWebsiteElement(website);
+      websitesElement.append(websiteElement);
+      formElement.remove();
+    });
+    document.body.append(formElement);
+  };
+
+  closeElement.onclick = () => {
+    const win = remote.getCurrentWindow();
+    win.close();
   };
 });
