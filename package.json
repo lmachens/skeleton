@@ -6,6 +6,7 @@
   "author": "Leon Machens",
   "license": "MIT",
   "scripts": {
+    "dev": "electronmon .",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make"
@@ -16,7 +17,8 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.61",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
-    "electron": "^16.0.1"
+    "electron": "^16.0.1",
+    "electronmon": "^2.0.2"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"
