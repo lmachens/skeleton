@@ -1,5 +1,8 @@
 const { app, BrowserWindow, screen } = require("electron");
 const path = require("path");
+const Store = require("electron-store");
+
+const store = new Store();
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -18,7 +21,7 @@ const createWindow = () => {
   win.webContents.setWindowOpenHandler((props) => {
     const json = props.features.substr("website=".length);
     const website = JSON.parse(decodeURIComponent(json));
-
+    const position = store.get(`${website.id}-position`);
     return {
       action: "allow",
       overrideBrowserWindowOptions: {
@@ -35,12 +38,13 @@ const createWindow = () => {
         webPreferences: {
           preload: path.join(__dirname, "childPreload.js"),
         },
+        x: position?.[0],
+        y: position?.[1],
       },
     };
   });
 
   const windowOptions = {};
-
   win.webContents.on("did-create-window", (childWindow, props) => {
     const website = JSON.parse(decodeURIComponent(props.options.website));
     if (website.clickThrough) {
@@ -54,6 +58,12 @@ const createWindow = () => {
         childWindow.setIgnoreMouseEvents(true);
       });
     }
+
+    childWindow.on("moved", (event, data) => {
+      const position = childWindow.getPosition();
+      store.set(`${website.id}-position`, position);
+    });
+
     windowOptions[childWindow.id] = website;
   });
 
@@ -84,6 +94,7 @@ const createWindow = () => {
     });
   }, 10);
 };
+
 app.whenReady().then(() => {
   createWindow();
 
