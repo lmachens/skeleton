@@ -1,7 +1,6 @@
 const { createFormModalElement } = require("./lib/formModalElement");
 const { getWebsites, addWebsite } = require("./lib/storage");
 const { createWebsiteElement } = require("./lib/websiteElement");
-const { remote } = require("electron");
 
 window.addEventListener("DOMContentLoaded", () => {
   const websitesElement = document.querySelector(".websites");
