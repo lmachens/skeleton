@@ -49,9 +49,6 @@ const createWindow = () => {
         autoHideMenuBar: true,
         maximizable: website.frame,
         fullscreenable: website.frame,
-        webPreferences: {
-          preload: path.join(__dirname, "childPreload.js"),
-        },
         x: bounds.x,
         y: bounds.y,
       },
@@ -115,15 +112,31 @@ const createWindow = () => {
         cursorInfo.ptScreenPos.y >= bounds.y;
       const inBounds = xInBounds && yInBounds && cursorInfo.hCursor !== 0;
       if (inBounds && !singleWindow.inBounds) {
-        singleWindow.webContents.send("mouseenter");
+        singleWindow.targetOpacity = 0.05;
+        fadeOpacity(singleWindow);
       } else if (!inBounds && singleWindow.inBounds) {
-        singleWindow.webContents.send("mouseleave");
+        singleWindow.targetOpacity = 1;
+        fadeOpacity(singleWindow);
       }
       singleWindow.inBounds = inBounds;
     });
   }, 10);
 };
 
+const fadeOpacity = (singleWindow) => {
+  setTimeout(() => {
+    const opacity = singleWindow.getOpacity();
+    if (opacity === singleWindow.targetOpacity) {
+      return;
+    }
+    if (opacity > singleWindow.targetOpacity) {
+      singleWindow.setOpacity(Math.max(0.05, opacity - 0.1));
+    } else {
+      singleWindow.setOpacity(Math.min(1, opacity + 0.1));
+    }
+    fadeOpacity(singleWindow);
+  }, 10);
+};
 app.whenReady().then(() => {
   createWindow();
 
