@@ -1,6 +1,7 @@
 const { app, BrowserWindow, screen } = require("electron");
 const path = require("path");
 const Store = require("electron-store");
+const { winuser } = require("easywin");
 
 const store = new Store();
 
@@ -85,13 +86,17 @@ const createWindow = () => {
     windowOptions[childWindow.id] = website;
   });
 
-  let prevMousePos = screen.getCursorScreenPoint();
+  let prevCursorInfo = winuser.GetCursorInfo();
   setInterval(() => {
-    const mousePos = screen.getCursorScreenPoint();
-    if (mousePos.x === prevMousePos.x && mousePos.y === prevMousePos.y) {
+    const cursorInfo = winuser.GetCursorInfo();
+    if (
+      cursorInfo.ptScreenPos.x === prevCursorInfo.ptScreenPos.x &&
+      cursorInfo.ptScreenPos.y === prevCursorInfo.ptScreenPos.y
+    ) {
       return;
     }
-    prevMousePos = mousePos;
+
+    prevCursorInfo = cursorInfo;
     const allWindows = BrowserWindow.getAllWindows();
     const clickThroughWindows = allWindows.filter(
       (singleWindow) => windowOptions[singleWindow.id]?.clickThrough
@@ -99,10 +104,12 @@ const createWindow = () => {
     clickThroughWindows.forEach((singleWindow) => {
       const bounds = singleWindow.getBounds();
       const xInBounds =
-        mousePos.x <= bounds.x + bounds.width && mousePos.x >= bounds.x;
+        cursorInfo.ptScreenPos.x <= bounds.x + bounds.width &&
+        cursorInfo.ptScreenPos.x >= bounds.x;
       const yInBounds =
-        mousePos.y <= bounds.y + bounds.height && mousePos.y >= bounds.y;
-      const inBounds = xInBounds && yInBounds;
+        cursorInfo.ptScreenPos.y <= bounds.y + bounds.height &&
+        cursorInfo.ptScreenPos.y >= bounds.y;
+      const inBounds = xInBounds && yInBounds && cursorInfo.hCursor !== 0;
       if (inBounds && !singleWindow.inBounds) {
         singleWindow.webContents.send("mouseenter");
       } else if (!inBounds && singleWindow.inBounds) {
