@@ -67,10 +67,12 @@ const createWindow = () => {
 
       childWindow.on("focus", () => {
         childWindow.setIgnoreMouseEvents(false);
+        fadeOpacity(childWindow);
       });
 
       childWindow.on("blur", () => {
         childWindow.setIgnoreMouseEvents(true);
+        fadeOpacity(childWindow);
       });
     }
 
@@ -124,12 +126,16 @@ const createWindow = () => {
 };
 
 const fadeOpacity = (singleWindow) => {
-  setTimeout(() => {
+  clearTimeout(singleWindow.fadeOpacityTimeout);
+  singleWindow.fadeOpacityTimeout = setTimeout(() => {
     const opacity = singleWindow.getOpacity();
-    if (opacity === singleWindow.targetOpacity) {
+    const targetOpacity = singleWindow.isFocused()
+      ? 1
+      : singleWindow.targetOpacity;
+    if (opacity === targetOpacity) {
       return;
     }
-    if (opacity > singleWindow.targetOpacity) {
+    if (opacity > targetOpacity) {
       singleWindow.setOpacity(Math.max(0.05, opacity - 0.1));
     } else {
       singleWindow.setOpacity(Math.min(1, opacity + 0.1));
