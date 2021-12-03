@@ -5,6 +5,7 @@ const Store = require("electron-store");
 const store = new Store();
 
 const createWindow = () => {
+  const bounds = store.get("skeleton-bounds") || {};
   const win = new BrowserWindow({
     width: 800,
     height: 640,
@@ -14,6 +15,18 @@ const createWindow = () => {
     frame: true,
     resizable: false,
     autoHideMenuBar: true,
+    x: bounds.x,
+    y: bounds.y,
+  });
+
+  win.on("resize", () => {
+    const bounds = win.getBounds();
+    store.set("skeleton-bounds", bounds);
+  });
+
+  win.on("moved", () => {
+    const bounds = win.getBounds();
+    store.set("skeleton-bounds", bounds);
   });
 
   win.loadFile("index.html");
@@ -22,7 +35,6 @@ const createWindow = () => {
     const json = props.features.substr("website=".length);
     const website = JSON.parse(decodeURIComponent(json));
     const bounds = store.get(`${website.id}-bounds`) || {};
-    console.log(bounds);
     return {
       action: "allow",
       overrideBrowserWindowOptions: {
