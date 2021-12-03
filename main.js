@@ -61,6 +61,10 @@ const createWindow = () => {
   const windowOptions = {};
   win.webContents.on("did-create-window", (childWindow, props) => {
     const website = JSON.parse(decodeURIComponent(props.options.website));
+    if (website.alwaysOnTop) {
+      childWindow.setAlwaysOnTop(true, "pop-up-menu");
+    }
+
     if (website.clickThrough) {
       childWindow.setIgnoreMouseEvents(true);
 
