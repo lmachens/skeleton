@@ -21,12 +21,13 @@ const createWindow = () => {
   win.webContents.setWindowOpenHandler((props) => {
     const json = props.features.substr("website=".length);
     const website = JSON.parse(decodeURIComponent(json));
-    const position = store.get(`${website.id}-position`);
+    const bounds = store.get(`${website.id}-bounds`) || {};
+    console.log(bounds);
     return {
       action: "allow",
       overrideBrowserWindowOptions: {
-        width: website.width,
-        height: website.height,
+        width: bounds.width || website.width,
+        height: bounds.height || website.height,
         frame: website.frame,
         movable: website.movable,
         resizable: website.resizable,
@@ -38,8 +39,8 @@ const createWindow = () => {
         webPreferences: {
           preload: path.join(__dirname, "childPreload.js"),
         },
-        x: position?.[0],
-        y: position?.[1],
+        x: bounds.x,
+        y: bounds.y,
       },
     };
   });
@@ -59,9 +60,14 @@ const createWindow = () => {
       });
     }
 
-    childWindow.on("moved", (event, data) => {
-      const position = childWindow.getPosition();
-      store.set(`${website.id}-position`, position);
+    childWindow.on("resize", () => {
+      const bounds = childWindow.getBounds();
+      store.set(`${website.id}-bounds`, bounds);
+    });
+
+    childWindow.on("moved", () => {
+      const bounds = childWindow.getBounds();
+      store.set(`${website.id}-bounds`, bounds);
     });
 
     windowOptions[childWindow.id] = website;
