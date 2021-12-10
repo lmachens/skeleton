@@ -2,6 +2,8 @@
 
 Skeleton allows you to display you websites in a configurable window which could be used as Overlay in-game.
 
+Windows 10/11 is required to run this program.
+
 ## Contribution
 
 This app is Open Source. Contributors are highly welcome!
