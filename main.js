@@ -1,7 +1,8 @@
-const { app, BrowserWindow, screen } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const Store = require("electron-store");
 const { winuser } = require("easywin");
+const { updateWebsite } = require("./lib/storage");
 
 const store = new Store();
 
@@ -36,12 +37,9 @@ const createWindow = () => {
   win.webContents.setWindowOpenHandler((props) => {
     const json = props.features.substr("website=".length);
     const website = JSON.parse(decodeURIComponent(json));
-    const bounds = store.get(`${website.id}-bounds`) || {};
     return {
       action: "allow",
       overrideBrowserWindowOptions: {
-        width: bounds.width || website.width,
-        height: bounds.height || website.height,
         frame: website.frame,
         movable: website.movable,
         resizable: website.resizable,
@@ -50,8 +48,7 @@ const createWindow = () => {
         autoHideMenuBar: true,
         maximizable: website.frame,
         fullscreenable: website.frame,
-        x: bounds.x,
-        y: bounds.y,
+        ...website.bounds,
       },
     };
   });
@@ -79,12 +76,12 @@ const createWindow = () => {
 
     childWindow.on("resize", () => {
       const bounds = childWindow.getBounds();
-      store.set(`${website.id}-bounds`, bounds);
+      updateWebsite(website.id, { bounds });
     });
 
     childWindow.on("moved", () => {
       const bounds = childWindow.getBounds();
-      store.set(`${website.id}-bounds`, bounds);
+      updateWebsite(website.id, { bounds });
     });
 
     windowOptions[childWindow.id] = website;
