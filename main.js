@@ -1,17 +1,17 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Tray, Menu, ipcMain } = require("electron");
 const path = require("path");
 const Store = require("electron-store");
 const { winuser } = require("easywin");
-const { updateWebsite } = require("./lib/storage");
-
+const { updateWebsite, listenWebsites } = require("./lib/storage");
 const store = new Store();
+const icon = path.join(__dirname, "skeleton.ico");
 
 const createWindow = () => {
   const bounds = store.get("skeleton-bounds") || {};
   const win = new BrowserWindow({
     width: 800,
     height: 640,
-    icon: path.join(__dirname, "skeleton.ico"),
+    icon: icon,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -121,6 +121,23 @@ const createWindow = () => {
       singleWindow.inBounds = inBounds;
     });
   }, 10);
+
+  const tray = new Tray(icon);
+  tray.setToolTip("Skeleton");
+  tray.on("click", () => {
+    win.restore();
+  });
+  listenWebsites((websites) => {
+    const template = websites.map((website) => ({
+      label: website.name,
+      type: "normal",
+      click: () => {
+        win.webContents.send("open", website);
+      },
+    }));
+    const contextMenu = Menu.buildFromTemplate(template);
+    tray.setContextMenu(contextMenu);
+  });
 };
 
 const fadeOpacity = (singleWindow) => {

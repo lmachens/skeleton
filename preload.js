@@ -1,6 +1,7 @@
+const { ipcRenderer } = require("electron");
 const { createFormModalElement } = require("./lib/formModalElement");
 const { listenWebsites, addWebsite } = require("./lib/storage");
-const { createWebsiteElement } = require("./lib/websiteElement");
+const { createWebsiteElement, openWebsite } = require("./lib/websiteElement");
 
 window.addEventListener("DOMContentLoaded", () => {
   const websitesElement = document.querySelector(".websites");
@@ -8,18 +9,19 @@ window.addEventListener("DOMContentLoaded", () => {
 
   listenWebsites((websites) => {
     websitesElement.innerHTML = "";
-    console.log(websites);
     const websiteElements = websites.map(createWebsiteElement);
     websitesElement.append(...websiteElements);
   });
 
   addElement.onclick = () => {
-    const formElement = createFormModalElement({}, (website) => {
+    const formElement = createFormModalElement({ bounds: {} }, (website) => {
       addWebsite(website);
-      const websiteElement = createWebsiteElement(website);
-      websitesElement.append(websiteElement);
       formElement.remove();
     });
     document.body.append(formElement);
   };
+
+  ipcRenderer.on("open", function (_, website) {
+    openWebsite(website);
+  });
 });
