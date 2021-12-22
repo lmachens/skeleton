@@ -143,6 +143,9 @@ const createWindow = () => {
 const fadeOpacity = (singleWindow) => {
   clearTimeout(singleWindow.fadeOpacityTimeout);
   singleWindow.fadeOpacityTimeout = setTimeout(() => {
+    if (!singleWindow) {
+      return;
+    }
     const opacity = singleWindow.getOpacity();
     const targetOpacity = singleWindow.isFocused()
       ? 1
