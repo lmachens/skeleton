@@ -17,7 +17,7 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.61",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
-    "electron": "^16.0.1",
+    "electron": "^16.0.5",
     "electronmon": "^2.0.2"
   },
   "dependencies": {
@@ -27,7 +27,9 @@
   },
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "./skeleton.ico"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
