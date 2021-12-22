@@ -135,7 +135,19 @@ const createWindow = () => {
         win.webContents.send("open", website);
       },
     }));
-    const contextMenu = Menu.buildFromTemplate(template);
+    const alwaysVisible = [
+      {
+        type: "separator",
+      },
+      {
+        label: "Exit",
+        type: "normal",
+        click: () => {
+          app.exit();
+        },
+      },
+    ];
+    const contextMenu = Menu.buildFromTemplate([...template, ...alwaysVisible]);
     tray.setContextMenu(contextMenu);
   });
 };
