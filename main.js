@@ -32,6 +32,11 @@ const createWindow = () => {
     store.set("skeleton-bounds", bounds);
   });
 
+  win.on("close", (event) => {
+    event.preventDefault();
+    win.hide();
+  });
+
   win.loadFile("index.html");
 
   win.webContents.setWindowOpenHandler((props) => {
@@ -139,7 +144,7 @@ const createWindow = () => {
   const tray = new Tray(icon);
   tray.setToolTip("Skeleton");
   tray.on("click", () => {
-    win.restore();
+    win.show();
   });
   listenWebsites((websites) => {
     const template = websites.map((website) => ({
