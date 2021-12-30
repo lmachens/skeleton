@@ -33,8 +33,10 @@ const createWindow = () => {
   });
 
   win.on("close", (event) => {
-    event.preventDefault();
-    win.hide();
+    if (!app.quitting) {
+      event.preventDefault();
+      win.hide();
+    }
   });
 
   win.loadFile("index.html");
@@ -162,7 +164,7 @@ const createWindow = () => {
         label: "Exit",
         type: "normal",
         click: () => {
-          app.exit();
+          app.quit();
         },
       },
     ];
@@ -201,6 +203,10 @@ app.whenReady().then(() => {
   });
 });
 
+app.on("before-quit", () => {
+  app.quitting = true;
+});
+
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.exit();
+  if (process.platform !== "darwin") app.quit();
 });
