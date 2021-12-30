@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, ipcMain } = require("electron");
+const { app, BrowserWindow, Tray, Menu, globalShortcut } = require("electron");
 const path = require("path");
 const Store = require("electron-store");
 const { winuser } = require("easywin");
@@ -85,6 +85,20 @@ const createWindow = () => {
     });
 
     windowOptions[childWindow.id] = website;
+
+    if (website.toggleHotkey) {
+      globalShortcut.register(website.toggleHotkey, () => {
+        if (childWindow.isVisible()) {
+          childWindow.hide();
+        } else {
+          childWindow.show();
+        }
+      });
+
+      childWindow.on("close", () => {
+        globalShortcut.unregister(website.toggleHotkey);
+      });
+    }
   });
 
   let prevCursorInfo = winuser.GetCursorInfo();
