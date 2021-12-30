@@ -42,73 +42,8 @@ const createWindow = () => {
 
   win.loadFile(path.join(__dirname, "index.html"));
 
-  win.webContents.setWindowOpenHandler((props) => {
-    const json = props.features.substr("website=".length);
-    const website = JSON.parse(decodeURIComponent(json));
-    return {
-      action: "allow",
-      overrideBrowserWindowOptions: {
-        frame: website.frame,
-        movable: website.movable,
-        resizable: website.resizable,
-        transparent: website.transparent,
-        alwaysOnTop: website.alwaysOnTop,
-        autoHideMenuBar: true,
-        maximizable: website.frame,
-        fullscreenable: website.frame,
-        ...website.bounds,
-      },
-    };
-  });
-
-  const windowOptions = {};
-  win.webContents.on("did-create-window", (childWindow, props) => {
-    const website = JSON.parse(decodeURIComponent(props.options.website));
-    if (website.alwaysOnTop) {
-      childWindow.setAlwaysOnTop(true, "pop-up-menu");
-    }
-
-    if (website.clickThrough) {
-      childWindow.setIgnoreMouseEvents(true);
-
-      childWindow.on("focus", () => {
-        childWindow.setIgnoreMouseEvents(false);
-        fadeOpacity(childWindow);
-      });
-
-      childWindow.on("blur", () => {
-        childWindow.setIgnoreMouseEvents(true);
-        fadeOpacity(childWindow);
-      });
-    }
-
-    childWindow.on("resize", () => {
-      const bounds = childWindow.getBounds();
-      updateWebsite(website.id, { bounds });
-    });
-
-    childWindow.on("moved", () => {
-      const bounds = childWindow.getBounds();
-      updateWebsite(website.id, { bounds });
-    });
-
-    windowOptions[childWindow.id] = website;
-
-    if (website.toggleHotkey) {
-      globalShortcut.register(website.toggleHotkey, () => {
-        if (childWindow.isVisible()) {
-          childWindow.hide();
-        } else {
-          childWindow.show();
-        }
-      });
-
-      childWindow.on("close", () => {
-        globalShortcut.unregister(website.toggleHotkey);
-      });
-    }
-  });
-
+  const activeWindows = {};
+  const clickThroughWindows = [];
   let prevCursorInfo = getCursorInfo();
   setInterval(() => {
     const cursorInfo = getCursorInfo();
@@ -120,27 +55,25 @@ const createWindow = () => {
     }
 
     prevCursorInfo = cursorInfo;
-    const allWindows = BrowserWindow.getAllWindows();
-    const clickThroughWindows = allWindows.filter(
-      (singleWindow) => windowOptions[singleWindow.id]?.clickThrough
-    );
     clickThroughWindows.forEach((singleWindow) => {
-      const bounds = singleWindow.getBounds();
-      const xInBounds =
-        cursorInfo.ptScreenPos.x <= bounds.x + bounds.width &&
-        cursorInfo.ptScreenPos.x >= bounds.x;
-      const yInBounds =
-        cursorInfo.ptScreenPos.y <= bounds.y + bounds.height &&
-        cursorInfo.ptScreenPos.y >= bounds.y;
-      const inBounds = xInBounds && yInBounds && cursorInfo.hCursor !== 0;
-      if (inBounds && !singleWindow.inBounds) {
-        singleWindow.targetOpacity = 0.05;
-        fadeOpacity(singleWindow);
-      } else if (!inBounds && singleWindow.inBounds) {
-        singleWindow.targetOpacity = 1;
-        fadeOpacity(singleWindow);
-      }
-      singleWindow.inBounds = inBounds;
+      try {
+        const bounds = singleWindow.getBounds();
+        const xInBounds =
+          cursorInfo.ptScreenPos.x <= bounds.x + bounds.width &&
+          cursorInfo.ptScreenPos.x >= bounds.x;
+        const yInBounds =
+          cursorInfo.ptScreenPos.y <= bounds.y + bounds.height &&
+          cursorInfo.ptScreenPos.y >= bounds.y;
+        const inBounds = xInBounds && yInBounds && cursorInfo.hCursor !== 0;
+        if (inBounds && !singleWindow.inBounds) {
+          singleWindow.targetOpacity = 0.05;
+          fadeOpacity(singleWindow);
+        } else if (!inBounds && singleWindow.inBounds) {
+          singleWindow.targetOpacity = 1;
+          fadeOpacity(singleWindow);
+        }
+        singleWindow.inBounds = inBounds;
+      } catch (error) {}
     });
   }, 10);
 
@@ -149,12 +82,105 @@ const createWindow = () => {
   tray.on("click", () => {
     win.show();
   });
+
+  const updateWebsiteWindow = (website) => {
+    const websiteWindow = new BrowserWindow({
+      icon: icon,
+      parent: win,
+      frame: website.frame,
+      movable: website.movable,
+      resizable: website.resizable,
+      transparent: website.transparent,
+      alwaysOnTop: website.alwaysOnTop,
+      autoHideMenuBar: true,
+      maximizable: website.frame,
+      fullscreenable: website.frame,
+      webPreferences: {
+        nodeIntegration: false,
+        show: false,
+      },
+      ...website.bounds,
+    });
+    websiteWindow.loadURL(website.url).catch(() => {
+      console.log("FAILED");
+      websiteWindow.close();
+      updateWebsite(website.id, { active: false });
+    });
+
+    websiteWindow.once("ready-to-show", () => {
+      websiteWindow.show();
+    });
+
+    activeWindows[website.id] = websiteWindow;
+    if (website.alwaysOnTop) {
+      websiteWindow.setAlwaysOnTop(true, "pop-up-menu");
+    }
+
+    if (website.clickThrough) {
+      websiteWindow.setIgnoreMouseEvents(true);
+
+      websiteWindow.on("focus", () => {
+        websiteWindow.setIgnoreMouseEvents(false);
+        fadeOpacity(websiteWindow);
+      });
+
+      websiteWindow.on("blur", () => {
+        websiteWindow.setIgnoreMouseEvents(true);
+        fadeOpacity(websiteWindow);
+      });
+      clickThroughWindows.push(websiteWindow);
+    }
+
+    websiteWindow.on("resize", () => {
+      const bounds = websiteWindow.getBounds();
+      updateWebsite(website.id, { bounds });
+    });
+
+    websiteWindow.on("moved", () => {
+      const bounds = websiteWindow.getBounds();
+      updateWebsite(website.id, { bounds });
+    });
+
+    if (website.toggleHotkey) {
+      globalShortcut.register(website.toggleHotkey, () => {
+        if (websiteWindow.isVisible()) {
+          websiteWindow.hide();
+        } else {
+          websiteWindow.show();
+        }
+      });
+
+      websiteWindow.on("close", () => {
+        globalShortcut.unregister(website.toggleHotkey);
+      });
+    }
+
+    websiteWindow.on("close", () => {
+      updateWebsite(website.id, { active: false });
+    });
+  };
+
   listenWebsites((websites) => {
+    websites.forEach((website) => {
+      try {
+        if (website.active && !activeWindows[website.id]) {
+          updateWebsiteWindow(website);
+        } else if (!website.active && activeWindows[website.id]) {
+          clickThroughWindows.splice(
+            clickThroughWindows.indexOf(activeWindows[website.id]),
+            1
+          );
+          activeWindows[website.id].close();
+          delete activeWindows[website.id];
+        }
+      } catch (error) {}
+    });
+
     const template = websites.map((website) => ({
       label: website.name,
       type: "normal",
       click: () => {
-        win.webContents.send("open", website);
+        updateWebsite(website.id, { active: true });
       },
     }));
     const alwaysVisible = [
@@ -196,6 +222,7 @@ const fadeOpacity = (singleWindow) => {
     }
   }, 10);
 };
+
 app.whenReady().then(() => {
   createWindow();
 

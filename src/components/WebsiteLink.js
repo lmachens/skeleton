@@ -1,5 +1,5 @@
-const openWebsite = require("../lib/openWebsite");
 const { createElement } = require("../lib/elements");
+const { updateWebsite } = require("../lib/storage");
 
 const WebsiteLink = (website) => {
   const hash = `#${website.id}`;
@@ -19,11 +19,10 @@ const WebsiteLink = (website) => {
         type: "checkbox",
         innerText: "🚀",
         title: "Open website",
+        checked: website.active,
         onclick: (event) => {
           event.stopPropagation();
-          if (event.target.checked) {
-            openWebsite(website);
-          }
+          updateWebsite(website.id, { active: event.target.checked });
         },
       }),
     ]

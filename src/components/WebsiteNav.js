@@ -6,8 +6,19 @@ const WebsiteNav = () => {
   const nav = createElement("nav");
 
   listenWebsites((websites) => {
-    nav.innerHTML = "";
-    const websiteElements = websites.map(WebsiteLink);
+    const websitesToAdd = [...websites];
+    for (let child of nav.children) {
+      const websiteIndex = websitesToAdd.findIndex(
+        (website) => child.hash === `#${website.id}`
+      );
+      if (websiteIndex !== -1) {
+        child.lastChild.checked = websitesToAdd[websiteIndex].active;
+        websitesToAdd.splice(websiteIndex, 1);
+      } else {
+        nav.removeChild(child);
+      }
+    }
+    const websiteElements = websitesToAdd.map(WebsiteLink);
     nav.append(...websiteElements);
   });
 

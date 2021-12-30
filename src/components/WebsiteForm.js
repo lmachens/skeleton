@@ -59,6 +59,7 @@ const WebsiteForm = () => {
 
         if (isNew) {
           addWebsite(website);
+          location.href = `#${website.id}`;
         } else {
           updateWebsite(websiteId, website);
         }
