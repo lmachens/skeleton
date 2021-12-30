@@ -1,0 +1,18 @@
+.close {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 1.6rem;
+  width: 1.6rem;
+  padding: 0;
+  background-color: transparent;
+}
+
+.close:hover {
+  background-color: var(--color-hover);
+}
+
+.close__icon {
+  height: 100%;
+  width: 100%;
+}

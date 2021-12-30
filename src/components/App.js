@@ -1,4 +1,5 @@
 const { createElement } = require("../lib/elements");
+const CloseButton = require("./CloseButton");
 const NewLink = require("./NewLink");
 const Title = require("./Title");
 const WebsiteForm = require("./WebsiteForm");
@@ -51,6 +52,7 @@ const App = () => {
         [Title(), newLink, websiteNav]
       ),
       main,
+      CloseButton(),
     ]
   );
 };

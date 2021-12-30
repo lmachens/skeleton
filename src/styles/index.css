@@ -6,6 +6,7 @@
 @import "./_nav.css";
 @import "./_checkbox.css";
 @import "./_form.css";
+@import "./_toolbar.css";
 
 button,
 input[type="submit"] {
