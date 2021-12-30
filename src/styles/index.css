@@ -1,0 +1,24 @@
+@import "./_fonts.css";
+@import "./_variables.css";
+@import "./_globals.css";
+@import "./_app.css";
+@import "./_title.css";
+@import "./_nav.css";
+@import "./_checkbox.css";
+@import "./_form.css";
+
+button,
+input[type="submit"] {
+  padding: 0.4em 0.6em;
+  border: none;
+}
+
+input[type="submit"] {
+  background-color: #0f62fe;
+  color: #ffffff;
+}
+
+button {
+  background-color: #6f6f6f;
+  color: #ffffff;
+}

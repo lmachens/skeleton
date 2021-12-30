@@ -4,18 +4,19 @@ const Store = require("electron-store");
 const { updateWebsite, listenWebsites } = require("./lib/storage");
 const { getCursorInfo } = require("./lib/winuser");
 const store = new Store();
-const icon = path.join(__dirname, "skeleton.ico");
+const icon = path.join(__dirname, "assets/skeleton.ico");
 
 const createWindow = () => {
   const bounds = store.get("skeleton-bounds") || {};
   const win = new BrowserWindow({
+    title: "Skeleton",
     width: 800,
-    height: 640,
+    height: 700,
     icon: icon,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
-    frame: true,
+    frame: false,
     resizable: false,
     autoHideMenuBar: true,
     x: bounds.x,
@@ -39,7 +40,7 @@ const createWindow = () => {
     }
   });
 
-  win.loadFile("index.html");
+  win.loadFile(path.join(__dirname, "index.html"));
 
   win.webContents.setWindowOpenHandler((props) => {
     const json = props.features.substr("website=".length);

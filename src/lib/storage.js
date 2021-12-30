@@ -20,6 +20,11 @@ const getWebsites = () => {
   }
 };
 
+const getWebsite = (id) => {
+  const websites = getWebsites();
+  return websites.find((item) => item.id === id);
+};
+
 const setWebsites = (websites) => {
   store.set("websites", websites);
 };
@@ -50,6 +55,7 @@ const deleteWebsite = (website) => {
 
 exports.listenWebsites = listenWebsites;
 exports.getWebsites = getWebsites;
+exports.getWebsite = getWebsite;
 exports.setWebsites = setWebsites;
 exports.addWebsite = addWebsite;
 exports.updateWebsite = updateWebsite;

@@ -1,0 +1,14 @@
+.layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  height: 100vh;
+}
+
+.aside {
+  background-color: var(--color-bg-primary);
+  width: 15rem;
+}
+
+.main {
+  background-color: var(--color-bg-secondary);
+}

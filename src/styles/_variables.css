@@ -1,0 +1,12 @@
+:root {
+  --color-primary: #1690a0;
+  --color-danger: #a01f16;
+  --color-text: #fff;
+  --color-bg-primary: #161616;
+  --color-bg-secondary: #0f0f0f;
+  --color-active: #494949;
+  --color-hover: #363636;
+  --color-inactive: #363636;
+  --font-family-title: "Vujahday Script", cursive;
+  --font-family-text: "Noto Sans", sans-serif;
+}

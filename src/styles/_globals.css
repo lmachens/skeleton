@@ -1,0 +1,49 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  color: var(--color-text);
+  font-family: var(--font-family-text);
+  user-select: none;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--font-family-title);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font-family: var(--font-family-text);
+}
+
+button,
+input[type="submit"] {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+  background-color: var(--color-inactive);
+}

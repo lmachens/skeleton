@@ -1,32 +1,26 @@
-const { createElement, createLabeledInputElement } = require("./elements");
+const { createElement } = require("../lib/elements");
+const {
+  getWebsite,
+  deleteWebsite,
+  updateWebsite,
+  addWebsite,
+} = require("../lib/storage");
+const HotkeyInput = require("./HotkeyInput");
+const LabeledInput = require("./LabeledInput");
 
-const createModalElement = (children) => {
-  const containerElement = createElement(
-    "div",
-    {
-      className: "modal",
-    },
-    [
-      createElement(
-        "div",
-        {
-          className: "inner",
-        },
-        children
-      ),
-    ]
-  );
-  return containerElement;
-};
+const WebsiteForm = () => {
+  const websiteId = +location.hash.replace("#", "");
+  let website = getWebsite(websiteId);
+  let isNew = false;
+  if (!website) {
+    isNew = true;
+    website = { bounds: {} };
+  }
 
-const createFormElement = (website, onSubmit, onClose) => {
-  return createElement(
+  const form = createElement(
     "form",
     {
       className: "form",
-      onclick: (event) => {
-        event.stopPropagation();
-      },
       onsubmit: (event) => {
         event.preventDefault();
         const {
@@ -62,134 +56,111 @@ const createFormElement = (website, onSubmit, onClose) => {
         website.clickThrough = clickThrough.checked;
         website.movable = movable.checked;
         website.toggleHotkey = toggleHotkey.value;
-        onSubmit(website);
+
+        if (isNew) {
+          addWebsite(website);
+        } else {
+          updateWebsite(websiteId, website);
+        }
       },
     },
     [
-      createLabeledInputElement({
+      LabeledInput({
         text: "Name",
-        className: "full-row",
+        className: "full",
         name: "name",
         placeholder: "Give it a name",
         value: website.name ?? "",
         required: true,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         text: "URL",
-        className: "full-row",
+        className: "full",
         name: "url",
         placeholder: "https://...",
         value: website.url ?? "",
         required: true,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         type: "number",
         text: "X",
         name: "x",
         value: website.bounds.x ?? 100,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         type: "number",
         text: "Y",
         name: "y",
         value: website.bounds.y ?? 100,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         type: "number",
         text: "Width",
         name: "width",
         value: website.bounds.width ?? 800,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         type: "number",
         text: "Height",
         name: "height",
         value: website.bounds.height ?? 600,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         type: "checkbox",
         text: "Frame",
         name: "frame",
         checked: website.frame ?? true,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         type: "checkbox",
         text: "Transparent",
         name: "transparent",
         checked: website.transparent ?? true,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         type: "checkbox",
         text: "Movable",
         name: "movable",
         checked: website.movable ?? true,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         type: "checkbox",
         text: "Always on top",
         name: "alwaysOnTop",
         checked: website.alwaysOnTop ?? true,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         type: "checkbox",
         text: "Resizable",
         name: "resizable",
         checked: website.resizable ?? true,
       }),
-      createLabeledInputElement({
+      LabeledInput({
         type: "checkbox",
         text: "Click through",
         name: "clickThrough",
         checked: website.clickThrough ?? false,
       }),
-      createLabeledInputElement({
-        type: "text",
-        text: "Show/Hide Hotkey",
-        name: "toggleHotkey",
-        value: website.toggleHotkey || "",
-        onkeyup(event) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          const keyCode = event.keyCode;
-          const key = event.key.replace("Arrow", "").toUpperCase();
-          if ((keyCode >= 16 && keyCode <= 18) || keyCode === 91) return;
-
-          const value = [];
-          if (event.ctrlKey) {
-            value.push("Ctrl");
-          }
-          if (event.shiftKey) {
-            value.push("Shift");
-          }
-          if (event.altKey) {
-            value.push("Alt");
-          }
-          value.push(key);
-
-          event.target.value = value.join("+");
-        },
-      }),
+      HotkeyInput({ value: website.toggleHotkey }),
       createElement("input", {
+        className: "full",
         type: "submit",
         value: "Save",
       }),
       createElement("button", {
-        type: "button",
-        onclick: onClose,
-        innerText: "Close",
+        innerText: "Delete",
+        className: "full danger",
+        disabled: isNew,
+        title: "Delete website",
+        onclick: () => {
+          location.href = "#";
+          deleteWebsite(website);
+        },
       }),
     ]
   );
+
+  return form;
 };
 
-const createFormModalElement = (website = { bounds: {} }, onSubmit) => {
-  const modalElement = createModalElement([
-    createFormElement(website, onSubmit, () => {
-      modalElement.remove();
-    }),
-  ]);
-  return modalElement;
-};
-
-exports.createFormModalElement = createFormModalElement;
+module.exports = WebsiteForm;
