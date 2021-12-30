@@ -174,22 +174,23 @@ const createWindow = () => {
 const fadeOpacity = (singleWindow) => {
   clearTimeout(singleWindow.fadeOpacityTimeout);
   singleWindow.fadeOpacityTimeout = setTimeout(() => {
-    if (!singleWindow) {
-      return;
+    try {
+      const opacity = singleWindow.getOpacity();
+      const targetOpacity = singleWindow.isFocused()
+        ? 1
+        : singleWindow.targetOpacity;
+      if (opacity === targetOpacity) {
+        return;
+      }
+      if (opacity > targetOpacity) {
+        singleWindow.setOpacity(Math.max(0.05, opacity - 0.1));
+      } else {
+        singleWindow.setOpacity(Math.min(1, opacity + 0.1));
+      }
+      fadeOpacity(singleWindow);
+    } catch (error) {
+      // Error is thrown if singleWindow doesn't exist anymore. No action required.
     }
-    const opacity = singleWindow.getOpacity();
-    const targetOpacity = singleWindow.isFocused()
-      ? 1
-      : singleWindow.targetOpacity;
-    if (opacity === targetOpacity) {
-      return;
-    }
-    if (opacity > targetOpacity) {
-      singleWindow.setOpacity(Math.max(0.05, opacity - 0.1));
-    } else {
-      singleWindow.setOpacity(Math.min(1, opacity + 0.1));
-    }
-    fadeOpacity(singleWindow);
   }, 10);
 };
 app.whenReady().then(() => {
@@ -201,5 +202,5 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+  if (process.platform !== "darwin") app.exit();
 });
