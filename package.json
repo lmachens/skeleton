@@ -21,7 +21,6 @@
     "electronmon": "^2.0.2"
   },
   "dependencies": {
-    "easywin": "^0.2.72",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.0.1"
   },

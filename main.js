@@ -1,8 +1,8 @@
 const { app, BrowserWindow, Tray, Menu, globalShortcut } = require("electron");
 const path = require("path");
 const Store = require("electron-store");
-const { winuser } = require("easywin");
 const { updateWebsite, listenWebsites } = require("./lib/storage");
+const { getCursorInfo } = require("./lib/winuser");
 const store = new Store();
 const icon = path.join(__dirname, "skeleton.ico");
 
@@ -106,9 +106,9 @@ const createWindow = () => {
     }
   });
 
-  let prevCursorInfo = winuser.GetCursorInfo();
+  let prevCursorInfo = getCursorInfo();
   setInterval(() => {
-    const cursorInfo = winuser.GetCursorInfo();
+    const cursorInfo = getCursorInfo();
     if (
       cursorInfo.ptScreenPos.x === prevCursorInfo.ptScreenPos.x &&
       cursorInfo.ptScreenPos.y === prevCursorInfo.ptScreenPos.y
