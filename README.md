@@ -1,8 +1,12 @@
 # Skeleton
 
-Skeleton allows you to display you websites in a configurable window which could be used as Overlay in-game.
+Skeleton allows you to display any website as Overlay to get a map or guide in-game without ALT+TAB or watching your favorite stream in a click-throughable window.
 
 Windows 10/11 is required to run this program.
+
+## Example usage
+
+https://user-images.githubusercontent.com/10058950/147827788-3132f6e1-f6da-453e-b4ed-1a1a41d0ed15.mp4
 
 ## Installation
 
