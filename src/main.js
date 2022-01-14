@@ -102,7 +102,6 @@ const createWindow = () => {
       ...website.bounds,
     });
     websiteWindow.loadURL(website.url).catch(() => {
-      console.log("FAILED");
       websiteWindow.close();
       updateWebsite(website.id, { active: false });
     });
@@ -198,6 +197,7 @@ const createWindow = () => {
     const contextMenu = Menu.buildFromTemplate([...template, ...alwaysVisible]);
     tray.setContextMenu(contextMenu);
   });
+  return win;
 };
 
 const fadeOpacity = (singleWindow) => {
@@ -223,13 +223,32 @@ const fadeOpacity = (singleWindow) => {
   }, 10);
 };
 
-app.whenReady().then(() => {
-  createWindow();
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  let myWindow;
+  app.on("second-instance", () => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (myWindow) {
+      if (!myWindow.isVisible()) {
+        myWindow.show();
+      }
+      myWindow.focus();
+    }
   });
-});
+
+  // Create myWindow, load the rest of the app, etc...
+  app.whenReady().then(() => {
+    myWindow = createWindow();
+
+    app.on("activate", () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        myWindow = createWindow();
+      }
+    });
+  });
+}
 
 app.on("before-quit", () => {
   app.quitting = true;
