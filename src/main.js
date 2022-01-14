@@ -1,4 +1,11 @@
-const { app, BrowserWindow, Tray, Menu, globalShortcut } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  Tray,
+  Menu,
+  globalShortcut,
+  ipcMain,
+} = require("electron");
 const path = require("path");
 const Store = require("electron-store");
 const { updateWebsite, listenWebsites } = require("./lib/storage");
@@ -77,100 +84,170 @@ const createWindow = () => {
     });
   }, 10);
 
+  ipcMain.on("updated-website", (_event, website) => {
+    const activeWindow = activeWindows[website.id];
+    if (activeWindow && !activeWindow.isDestroyed() && website.active) {
+      activeWindow.webContents.send("update", website);
+    }
+  });
+
   const tray = new Tray(icon);
   tray.setToolTip("Skeleton");
   tray.on("click", () => {
     win.show();
   });
 
+  const destroyWebsiteWindow = (websiteId) => {
+    if (!activeWindows[websiteId]) {
+      return;
+    }
+
+    if (activeWindows[websiteId].handleHotkey) {
+      globalShortcut.unregister(
+        activeWindows[websiteId].toggleHotkey,
+        activeWindows[websiteId].handleHotkey
+      );
+    }
+    activeWindows[websiteId].destroy();
+    delete activeWindows[websiteId];
+  };
+
   const updateWebsiteWindow = (website) => {
-    const websiteWindow = new BrowserWindow({
-      icon: icon,
-      parent: win,
-      frame: website.frame,
-      movable: website.movable,
-      resizable: website.resizable,
-      transparent: website.transparent,
-      alwaysOnTop: website.alwaysOnTop,
-      autoHideMenuBar: true,
-      maximizable: website.frame,
-      fullscreenable: website.frame,
-      webPreferences: {
-        nodeIntegration: false,
-        show: false,
-      },
-      ...website.bounds,
-    });
-    websiteWindow.loadURL(website.url).catch(() => {
-      websiteWindow.close();
-      updateWebsite(website.id, { active: false });
-    });
+    try {
+      if (
+        activeWindows[website.id] &&
+        (website.frame !== activeWindows[website.id].frame ||
+          website.transparent !== activeWindows[website.id].transparent)
+      ) {
+        destroyWebsiteWindow(website.id);
+      }
 
-    websiteWindow.once("ready-to-show", () => {
-      websiteWindow.show();
-    });
+      const websiteWindow =
+        activeWindows[website.id] ||
+        new BrowserWindow({
+          icon: icon,
+          frame: website.frame,
+          transparent: website.transparent,
+          autoHideMenuBar: true,
+          webPreferences: {
+            webviewTag: true,
+            nodeIntegration: false,
+            preload: path.join(__dirname, "child.js"),
+          },
+        });
 
-    activeWindows[website.id] = websiteWindow;
-    if (website.alwaysOnTop) {
-      websiteWindow.setAlwaysOnTop(true, "pop-up-menu");
-    }
+      websiteWindow.frame = website.frame;
+      websiteWindow.transparent = website.transparent;
 
-    if (website.clickThrough) {
-      websiteWindow.setIgnoreMouseEvents(true);
+      websiteWindow.setMovable(website.movable);
+      websiteWindow.setResizable(website.resizable);
+      websiteWindow.setAlwaysOnTop(website.alwaysOnTop);
+      websiteWindow.setBounds(website.bounds);
+      websiteWindow.setMaximizable(website.frame);
+      websiteWindow.setFullScreenable(website.frame);
+      if (website.alwaysOnTop) {
+        websiteWindow.setAlwaysOnTop(true, "pop-up-menu");
+      }
 
-      websiteWindow.on("focus", () => {
-        websiteWindow.setIgnoreMouseEvents(false);
-        fadeOpacity(websiteWindow);
-      });
-
-      websiteWindow.on("blur", () => {
-        websiteWindow.setIgnoreMouseEvents(true);
-        fadeOpacity(websiteWindow);
-      });
-      clickThroughWindows.push(websiteWindow);
-    }
-
-    websiteWindow.on("resize", () => {
-      const bounds = websiteWindow.getBounds();
-      updateWebsite(website.id, { bounds });
-    });
-
-    websiteWindow.on("moved", () => {
-      const bounds = websiteWindow.getBounds();
-      updateWebsite(website.id, { bounds });
-    });
-
-    if (website.toggleHotkey) {
-      globalShortcut.register(website.toggleHotkey, () => {
-        if (websiteWindow.isVisible()) {
-          websiteWindow.hide();
-        } else {
-          websiteWindow.show();
+      if (activeWindows[website.id]) {
+        if (websiteWindow.handleFocus) {
+          websiteWindow.off("focus", websiteWindow.handleFocus);
         }
-      });
+        if (websiteWindow.handleBlur) {
+          websiteWindow.off("blur", websiteWindow.handleBlur);
+        }
 
-      websiteWindow.on("close", () => {
-        globalShortcut.unregister(website.toggleHotkey);
-      });
+        if (websiteWindow.handleClose) {
+          websiteWindow.off("close", websiteWindow.handleClose);
+        }
+        if (websiteWindow.handleHotkey) {
+          globalShortcut.unregister(
+            websiteWindow.toggleHotkey,
+            websiteWindow.handleHotkey
+          );
+        }
+      } else {
+        websiteWindow.loadFile(path.join(__dirname, "child.html"));
+        websiteWindow.on("resize", () => {
+          const bounds = websiteWindow.getBounds();
+          updateWebsite(website.id, { bounds });
+        });
+
+        websiteWindow.on("moved", () => {
+          const bounds = websiteWindow.getBounds();
+          updateWebsite(website.id, { bounds });
+        });
+
+        ipcMain.once("whoami", () => {
+          websiteWindow.webContents.send("update", website);
+        });
+
+        activeWindows[website.id] = websiteWindow;
+      }
+
+      if (website.clickThrough) {
+        websiteWindow.setIgnoreMouseEvents(true);
+
+        websiteWindow.handleFocus = () => {
+          websiteWindow.setIgnoreMouseEvents(false);
+          fadeOpacity(websiteWindow);
+        };
+        websiteWindow.on("focus", websiteWindow.handleFocus);
+
+        websiteWindow.handleBlur = () => {
+          websiteWindow.setIgnoreMouseEvents(true);
+          fadeOpacity(websiteWindow);
+        };
+        websiteWindow.on("blur", websiteWindow.handleBlur);
+        clickThroughWindows.push(websiteWindow);
+      } else {
+        websiteWindow.setIgnoreMouseEvents(false);
+        if (clickThroughWindows.indexOf(activeWindows[website.id] !== -1)) {
+          clickThroughWindows.splice(
+            clickThroughWindows.indexOf(activeWindows[website.id]),
+            1
+          );
+        }
+      }
+
+      if (website.toggleHotkey) {
+        websiteWindow.toggleHotkey = website.toggleHotkey;
+        websiteWindow.handleHotkey = () => {
+          if (websiteWindow.isVisible()) {
+            websiteWindow.hide();
+          } else {
+            websiteWindow.show();
+          }
+        };
+        globalShortcut.register(
+          website.toggleHotkey,
+          websiteWindow.handleHotkey
+        );
+      }
+
+      websiteWindow.handleClose = () => {
+        updateWebsite(website.id, { active: false });
+        if (website.toggleHotkey) {
+          globalShortcut.unregister(website.toggleHotkey);
+        }
+      };
+      websiteWindow.on("close", websiteWindow.handleClose);
+    } catch (error) {
+      console.error(error);
     }
-
-    websiteWindow.on("close", () => {
-      updateWebsite(website.id, { active: false });
-    });
   };
 
   listenWebsites((websites) => {
     websites.forEach((website) => {
       try {
-        if (website.active && !activeWindows[website.id]) {
+        if (website.active) {
           updateWebsiteWindow(website);
         } else if (!website.active && activeWindows[website.id]) {
           clickThroughWindows.splice(
             clickThroughWindows.indexOf(activeWindows[website.id]),
             1
           );
-          activeWindows[website.id].close();
-          delete activeWindows[website.id];
+          destroyWebsiteWindow(website.id);
         }
       } catch (error) {}
     });

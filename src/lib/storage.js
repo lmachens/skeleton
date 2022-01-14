@@ -1,3 +1,4 @@
+const { ipcRenderer } = require("electron");
 const Store = require("electron-store");
 
 const store = new Store({ watch: true });
@@ -41,6 +42,7 @@ const updateWebsite = (id, partialWebsite) => {
   if (existingWebsite) {
     Object.assign(existingWebsite, partialWebsite);
     setWebsites(websites);
+    ipcRenderer?.send("updated-website", existingWebsite);
   }
 };
 
