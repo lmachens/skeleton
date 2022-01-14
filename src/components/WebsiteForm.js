@@ -73,7 +73,9 @@ const WebsiteForm = () => {
       className: "form",
       onsubmit: (event) => {
         event.preventDefault();
-        website = getWebsite(websiteId);
+        if (!isNew) {
+          website = getWebsite(websiteId);
+        }
         const {
           name,
           height,
