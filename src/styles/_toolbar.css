@@ -1,7 +1,9 @@
+.toolbar {
+  display: flex;
+  justify-content: end;
+}
+
 .close {
-  position: fixed;
-  top: 0;
-  right: 0;
   height: 1.6rem;
   width: 1.6rem;
   padding: 0;

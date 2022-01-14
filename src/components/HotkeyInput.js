@@ -1,12 +1,13 @@
 const LabeledInput = require("./LabeledInput");
 
-const HotkeyInput = ({ value }) => {
+const HotkeyInput = ({ value, oninput }) => {
   return LabeledInput({
     type: "text",
     text: "Show/Hide Hotkey",
     name: "toggleHotkey",
     placeholder: "Unassigned",
     value: value || "",
+    oninput: oninput,
     onkeyup(event) {
       event.preventDefault();
       event.stopPropagation();
