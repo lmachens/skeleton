@@ -3,7 +3,7 @@ const { listenWebsites } = require("../lib/storage");
 const WebsiteLink = require("./WebsiteLink");
 
 const WebsiteNav = () => {
-  const nav = createElement("nav");
+  const nav = createElement("nav", { className: "nav" });
 
   listenWebsites((websites) => {
     const websitesToAdd = [...websites];

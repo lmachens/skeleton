@@ -4,6 +4,7 @@ const NewLink = require("./NewLink");
 const Title = require("./Title");
 const WebsiteForm = require("./WebsiteForm");
 const WebsiteNav = require("./WebsiteNav");
+const { shell } = require("electron");
 
 const App = () => {
   const newLink = NewLink();
@@ -49,10 +50,20 @@ const App = () => {
         {
           className: "aside",
         },
-        [Title(), newLink, websiteNav]
+        [
+          Title(),
+          newLink,
+          websiteNav,
+          createElement("button", {
+            className: "support",
+            innerText: "💙 Support me",
+            onclick: () =>
+              shell.openExternal("https://github.com/sponsors/lmachens"),
+          }),
+        ]
       ),
+      createElement("div", { className: "toolbar" }, [CloseButton()]),
       main,
-      CloseButton(),
     ]
   );
 };
