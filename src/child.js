@@ -12,8 +12,10 @@ window.addEventListener("DOMContentLoaded", () => {
     const heightOffset = crop.top + crop.bottom;
 
     const iframe = document.querySelector("#child");
-    iframe.src = website.url;
-    document.title = website.name;
+    if (!iframe.src) {
+      iframe.src = website.url;
+      document.title = website.name;
+    }
     iframe.style = `top: ${-crop.top}px; left: ${-crop.left}px; right: ${-crop.right}px; width: calc(100% + ${widthOffset}px); bottom: ${-crop.bottom}px; top: ${-crop.top}px; height: calc(100% + ${heightOffset}px);`;
   });
 
