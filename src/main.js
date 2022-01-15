@@ -167,6 +167,21 @@ const createWindow = () => {
           );
         }
       } else {
+        websiteWindow.webContents.session.webRequest.onHeadersReceived(
+          { urls: ["*://*/*"] },
+          (details, callback) => {
+            if (details.responseHeaders["X-Frame-Options"]) {
+              delete details.responseHeaders["X-Frame-Options"];
+            } else if (details.responseHeaders["x-frame-options"]) {
+              delete details.responseHeaders["x-frame-options"];
+            }
+
+            callback({
+              cancel: false,
+              responseHeaders: details.responseHeaders,
+            });
+          }
+        );
         websiteWindow.loadFile(path.join(__dirname, "child.html"));
         websiteWindow.on("resize", () => {
           const bounds = websiteWindow.getBounds();

@@ -5,9 +5,9 @@ body {
   overflow: hidden;
 }
 
-webview {
-  display: inline-flex;
+#child {
   height: 100%;
   width: 100%;
   position: relative;
+  border: none;
 }
