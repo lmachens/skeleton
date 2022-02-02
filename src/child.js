@@ -10,13 +10,14 @@ window.addEventListener("DOMContentLoaded", () => {
     };
     const widthOffset = crop.left + crop.right;
     const heightOffset = crop.top + crop.bottom;
+    const borderRadius = website.borderRadius ?? 0;
 
     const iframe = document.querySelector("#child");
     if (!iframe.src) {
       iframe.src = website.url;
       document.title = website.name;
     }
-    iframe.style = `top: ${-crop.top}px; left: ${-crop.left}px; right: ${-crop.right}px; width: calc(100% + ${widthOffset}px); bottom: ${-crop.bottom}px; top: ${-crop.top}px; height: calc(100% + ${heightOffset}px);`;
+    iframe.style = `top: ${-crop.top}px; left: ${-crop.left}px; right: ${-crop.right}px; width: calc(100% + ${widthOffset}px); bottom: ${-crop.bottom}px; top: ${-crop.top}px; height: calc(100% + ${heightOffset}px); border-radius: ${borderRadius}%;`;
   });
 
   ipcRenderer.send("whoami");

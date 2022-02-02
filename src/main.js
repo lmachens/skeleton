@@ -74,10 +74,10 @@ const createWindow = () => {
           cursorInfo.ptScreenPos.y >= bounds.y;
         const inBounds = xInBounds && yInBounds && cursorInfo.hCursor !== 0;
         if (inBounds && !singleWindow.inBounds) {
-          singleWindow.targetOpacity = 0.05;
+          singleWindow.targetOpacity = 0;
           fadeOpacity(singleWindow);
         } else if (!inBounds && singleWindow.inBounds) {
-          singleWindow.targetOpacity = 1;
+          singleWindow.targetOpacity = singleWindow.maxOpacity;
           fadeOpacity(singleWindow);
         }
         singleWindow.inBounds = inBounds;
@@ -139,7 +139,8 @@ const createWindow = () => {
 
       websiteWindow.frame = website.frame;
       websiteWindow.transparent = website.transparent;
-      websiteWindow.setOpacity(website.opacity ?? 1);
+      websiteWindow.maxOpacity = website.opacity ?? 1;
+      websiteWindow.setOpacity(websiteWindow.maxOpacity);
       websiteWindow.setMovable(website.movable);
       websiteWindow.setResizable(website.resizable);
       websiteWindow.setAlwaysOnTop(website.alwaysOnTop);
@@ -315,7 +316,9 @@ const fadeOpacity = (singleWindow) => {
       if (opacity > targetOpacity) {
         singleWindow.setOpacity(Math.max(0.05, opacity - 0.1));
       } else {
-        singleWindow.setOpacity(Math.min(1, opacity + 0.1));
+        singleWindow.setOpacity(
+          Math.min(singleWindow.maxOpacity, opacity + 0.1)
+        );
       }
       fadeOpacity(singleWindow);
     } catch (error) {

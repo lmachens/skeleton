@@ -95,6 +95,7 @@ const WebsiteForm = () => {
           cropTop,
           cropBottom,
           opacity,
+          borderRadius,
         } = event.target.elements;
         website.name = name.value;
         if (!website.id) {
@@ -120,7 +121,8 @@ const WebsiteForm = () => {
         website.clickThrough = clickThrough.checked;
         website.movable = movable.checked;
         website.toggleHotkey = toggleHotkey.value;
-        website.opacity = +opacity.value / 100;
+        website.opacity = +opacity.value;
+        website.borderRadius = +borderRadius.value;
         if (isNew) {
           addWebsite(website);
           location.href = `#${website.id}`;
@@ -183,8 +185,18 @@ const WebsiteForm = () => {
         text: "Opacity",
         name: "opacity",
         min: 0,
+        max: 1,
+        step: 0.01,
+        value: website.opacity ?? 1,
+        oninput: handleChange,
+      }),
+      LabeledInput({
+        type: "range",
+        text: "Border Radius",
+        name: "borderRadius",
+        min: 0,
         max: 100,
-        value: website.opacity ?? 100,
+        value: website.borderRadius ?? 0,
         oninput: handleChange,
       }),
       LabeledInput({
