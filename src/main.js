@@ -5,6 +5,7 @@ const {
   Menu,
   globalShortcut,
   ipcMain,
+  screen,
 } = require("electron");
 const path = require("path");
 const Store = require("electron-store");
@@ -142,7 +143,15 @@ const createWindow = () => {
       websiteWindow.setMovable(website.movable);
       websiteWindow.setResizable(website.resizable);
       websiteWindow.setAlwaysOnTop(website.alwaysOnTop);
-      websiteWindow.setBounds(website.bounds);
+      const oldBounds = websiteWindow.getBounds();
+      if (
+        oldBounds.x !== website.bounds.x ||
+        oldBounds.y !== website.bounds.y ||
+        oldBounds.width !== website.bounds.width ||
+        oldBounds.height !== website.bounds.height
+      ) {
+        websiteWindow.setBounds(website.bounds);
+      }
       websiteWindow.setMaximizable(website.frame);
       websiteWindow.setFullScreenable(website.frame);
       if (website.alwaysOnTop) {
