@@ -1,6 +1,6 @@
 {
   "name": "skeleton",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "Simply add any website in customizable windows",
   "main": "src/main.js",
   "author": "Leon Machens",
