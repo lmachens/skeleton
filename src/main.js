@@ -139,7 +139,7 @@ const createWindow = () => {
 
       websiteWindow.frame = website.frame;
       websiteWindow.transparent = website.transparent;
-
+      websiteWindow.setOpacity(website.opacity ?? 1);
       websiteWindow.setMovable(website.movable);
       websiteWindow.setResizable(website.resizable);
       websiteWindow.setAlwaysOnTop(website.alwaysOnTop);

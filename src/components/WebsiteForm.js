@@ -94,6 +94,7 @@ const WebsiteForm = () => {
           cropRight,
           cropTop,
           cropBottom,
+          opacity,
         } = event.target.elements;
         website.name = name.value;
         if (!website.id) {
@@ -119,6 +120,7 @@ const WebsiteForm = () => {
         website.clickThrough = clickThrough.checked;
         website.movable = movable.checked;
         website.toggleHotkey = toggleHotkey.value;
+        website.opacity = +opacity.value / 100;
         if (isNew) {
           addWebsite(website);
           location.href = `#${website.id}`;
@@ -174,6 +176,15 @@ const WebsiteForm = () => {
         text: "Crop Bottom",
         name: "cropBottom",
         value: website.crop?.bottom ?? 0,
+        oninput: handleChange,
+      }),
+      LabeledInput({
+        type: "range",
+        text: "Opacity",
+        name: "opacity",
+        min: 0,
+        max: 100,
+        value: website.opacity ?? 100,
         oninput: handleChange,
       }),
       LabeledInput({
