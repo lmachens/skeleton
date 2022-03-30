@@ -185,6 +185,24 @@ const createWindow = () => {
             } else if (details.responseHeaders["x-frame-options"]) {
               delete details.responseHeaders["x-frame-options"];
             }
+            if (
+              details.responseHeaders["Set-Cookie"]?.length &&
+              !details.responseHeaders["Set-Cookie"][0].includes(
+                "SameSite=none"
+              )
+            ) {
+              details.responseHeaders["Set-Cookie"][0] =
+                details.responseHeaders["Set-Cookie"][0] + "; SameSite=none";
+            }
+            if (
+              details.responseHeaders["set-cookie"]?.length &&
+              !details.responseHeaders["set-cookie"][0].includes(
+                "SameSite=none"
+              )
+            ) {
+              details.responseHeaders["set-cookie"][0] =
+                details.responseHeaders["set-cookie"][0] + "; SameSite=none";
+            }
 
             callback({
               cancel: false,
