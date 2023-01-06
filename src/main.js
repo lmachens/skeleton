@@ -5,7 +5,6 @@ const {
   Menu,
   globalShortcut,
   ipcMain,
-  screen,
 } = require("electron");
 const path = require("path");
 const Store = require("electron-store");
@@ -23,6 +22,7 @@ const createWindow = () => {
     icon: icon,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      sandbox: false,
     },
     frame: false,
     resizable: false,
@@ -134,8 +134,22 @@ const createWindow = () => {
             webviewTag: true,
             nodeIntegration: false,
             preload: path.join(__dirname, "child.js"),
+            sandbox: false,
+            webSecurity: false,
           },
         });
+
+      websiteWindow.webContents.setWindowOpenHandler((details) => {
+        return {
+          action: "allow",
+          overrideBrowserWindowOptions: {
+            webPreferences: {
+              sandbox: false,
+              webSecurity: false,
+            },
+          },
+        };
+      });
 
       websiteWindow.frame = website.frame;
       websiteWindow.transparent = website.transparent;
@@ -178,13 +192,12 @@ const createWindow = () => {
         }
       } else {
         websiteWindow.webContents.session.webRequest.onHeadersReceived(
-          { urls: ["*://*/*"] },
           (details, callback) => {
-            if (details.responseHeaders["X-Frame-Options"]) {
-              delete details.responseHeaders["X-Frame-Options"];
-            } else if (details.responseHeaders["x-frame-options"]) {
-              delete details.responseHeaders["x-frame-options"];
-            }
+            delete details.responseHeaders["X-Frame-Options"];
+            delete details.responseHeaders["x-frame-options"];
+            delete details.responseHeaders["Content-Security-Policy"];
+            details.responseHeaders["content-security-policy"] =
+              "default-src 'self' 'unsafe-inline' * data: blob:";
 
             const setCookieHeaders =
               details.responseHeaders["Set-Cookie"] ||
@@ -197,10 +210,10 @@ const createWindow = () => {
                 setCookieHeaders[index] += "; SameSite=none";
               }
             }
-
             callback({
               cancel: false,
               responseHeaders: details.responseHeaders,
+              statusLine: details.statusLine,
             });
           }
         );
