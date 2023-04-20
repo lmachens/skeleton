@@ -19,11 +19,20 @@
       async
       src="https://s.nitropay.com/ads-1487.js"
     ></script>
+    <style>
+      .banner {
+        display: block;
+        background-color: #161616;
+        background-image: url(/icon.webp);
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+    </style>
   </head>
 
   <body style="width: 100%; margin: 0">
     <div style="width: 300px">
-      <div id="banner-1" style="display: block"></div>
+      <div id="banner-1" class="banner"></div>
       <script type="text/javascript">
         window.nitroAds.createAd("banner-1", {
           sizes: [[300, 250]],
@@ -40,7 +49,7 @@
 
       <br /><br />
 
-      <div id="banner-2" style="display: block"></div>
+      <div id="banner-2" class="banner"></div>
       <script type="text/javascript">
         window.nitroAds.createAd("banner-2", {
           sizes: [[300, 250]],
