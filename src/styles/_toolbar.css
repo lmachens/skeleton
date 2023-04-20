@@ -1,6 +1,8 @@
 .toolbar {
   display: flex;
   justify-content: end;
+  grid-column: 2 / 4;
+  -webkit-app-region: drag;
 }
 
 .close {
@@ -8,6 +10,7 @@
   width: 1.6rem;
   padding: 0;
   background-color: transparent;
+  -webkit-app-region: no-drag;
 }
 
 .close:hover {

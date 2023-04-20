@@ -1,7 +1,7 @@
 .layout {
   display: grid;
   align-items: start;
-  grid-template: auto 1fr / auto 1fr;
+  grid-template: auto 1fr / auto 1fr auto;
   height: 100vh;
   background-color: var(--color-bg-secondary);
 }
@@ -19,5 +19,10 @@
 
 .main {
   overflow: auto;
+  height: 100%;
+}
+
+.ads {
+  width: 320px;
   height: 100%;
 }

@@ -56,14 +56,15 @@ const App = () => {
           websiteNav,
           createElement("button", {
             className: "support",
-            innerText: "💙 Support me",
+            innerText: "💙 Open Source",
             onclick: () =>
-              shell.openExternal("https://github.com/sponsors/lmachens"),
+              shell.openExternal("https://github.com/lmachens/skeleton"),
           }),
         ]
       ),
       createElement("div", { className: "toolbar" }, [CloseButton()]),
       main,
+      createElement("aside", { className: "ads" }, []),
     ]
   );
 };

@@ -10,6 +10,7 @@ const path = require("path");
 const Store = require("electron-store");
 const { updateWebsite, listenWebsites } = require("./lib/storage");
 const { getCursorInfo } = require("./lib/winuser");
+const { createAdsWindow } = require("./lib/ads");
 const store = new Store();
 const icon = path.join(__dirname, "assets/skeleton.ico");
 
@@ -17,8 +18,8 @@ const createWindow = () => {
   const bounds = store.get("skeleton-bounds") || {};
   const win = new BrowserWindow({
     title: "Skeleton",
-    width: 800,
-    height: 700,
+    width: 1280,
+    height: 720,
     icon: icon,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -30,6 +31,7 @@ const createWindow = () => {
     x: bounds.x,
     y: bounds.y,
   });
+  // win.webContents.openDevTools({ mode: "detach" });
 
   win.on("resize", () => {
     const bounds = win.getBounds();
@@ -49,6 +51,8 @@ const createWindow = () => {
   });
 
   win.loadFile(path.join(__dirname, "index.html"));
+
+  createAdsWindow(win);
 
   const activeWindows = {};
   const clickThroughWindows = [];
