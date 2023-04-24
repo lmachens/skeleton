@@ -21,7 +21,24 @@
     ></script>
   </head>
 
-  <body style="width: 100%; margin: 0">
+  <body
+    style="
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    "
+  >
+    <p>
+      If you see this, you might have an ad-blocker activated.<br />Consider
+      whitelisting <code>nitropay.com</code> to support the development of this
+      app.
+    </p>
+    <button onclick="window.close();">Close Window</button>
     <script>
       function showConsentTool() {
         if (window.__cmp) {
