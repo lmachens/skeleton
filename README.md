@@ -43,4 +43,4 @@ npm run make
 
 ## Licensing
 
-MIT
+[MIT](https://choosealicense.com/licenses/mit/)
