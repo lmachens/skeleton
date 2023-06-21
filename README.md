@@ -2,7 +2,7 @@
 
 <div align="center">
 
-  :earth_americas: [Français](./README.md) | English
+  :earth_americas: [Français](./README.fr.md) | English
   </div>
 
 <p>
