@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to Skeleton 👋</h1>
+<h1 align="center">Bienvenue sur Skeleton 👋</h1>
 
 <div align="center">
 
@@ -12,7 +12,7 @@
   </a>
 </p>
 
-> Skeleton vous permet d'afficher n'importe quel site Web en superposition (Overlay) pour afficher, par exemple, une carte ou un guide dans vos jeux favoris sans avoir à utiliser ALT + TAB ou encore regarder vos vidéos sans rater une action.
+> Skeleton vous permet d'afficher n'importe quel site Web en superposition (Overlay) de vos applications. Par exemple, une carte ou un guide dans vos jeux favoris sans avoir à utiliser ALT + TAB ou encore regarder vos vidéos sans rater une action.
 
 ## Exemple d'utilisation
 
