@@ -1,3 +1,5 @@
+:earth_americas: [Français](./README.fr.md) | English
+
 # Skeleton
 
 Skeleton allows you to display any website as Overlay to get a map or guide in-game without ALT+TAB or watching your favorite stream in a click-throughable window.
