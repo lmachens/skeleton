@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to Skeleton 👋</h1>
+﻿<h1 align="center">Welcome to Skeleton 👋</h1>
 
 <div align="center">
 
@@ -51,12 +51,13 @@ npm run make
 
 * Website: https://leon.machens.koeln/
 * Github: [@lmachens](https://github.com/lmachens/)
-* Discord: [DevLeon](https://discord.com/users/devleon/)
+* Discord: [DevLeon#4001](https://discord.com/users/devleon/)
 
 
 ## 🤝 Contributing
 
 This app is Open Source. Contributions, issues and feature requests are welcome!<br />
+If you want to contribute to this project, please join the Discord and contact me (DevLeon#4001). I will be happy to help you get started.<br />
 Join us on our
 
 <a href="https://discord.com/invite/NTZu8Px">
