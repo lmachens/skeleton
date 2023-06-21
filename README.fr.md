@@ -2,7 +2,7 @@
 
 # Skeleton
 
-Skeleton vous permet d'afficher n'importe quel site Web en superposition (Overlay) pour afficher, par exemple, une carte ou un guide dans vos jeux favoris sans avoir à utiliser ALT + TAB ou encore regarder vos vidéos sans rater une action.
+Skeleton vous permet d'afficher n'importe quel site Web en superposition (Overlay) de vos applications. Par exemple, une carte ou un guide dans vos jeux favoris sans avoir à utiliser ALT + TAB ou encore regarder vos vidéos sans rater une action.
 
 
 Windows 10/11 est requis pour exécuter ce programme.
