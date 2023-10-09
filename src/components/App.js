@@ -1,4 +1,5 @@
 const { createElement } = require("../lib/elements");
+const { initPlausible, trackPageView } = require("../lib/plausible");
 const CloseButton = require("./CloseButton");
 const NewLink = require("./NewLink");
 const Title = require("./Title");
@@ -7,6 +8,9 @@ const WebsiteNav = require("./WebsiteNav");
 const { shell } = require("electron");
 
 const App = () => {
+  initPlausible("skeleton.th.gl", "https://apps.machens.dev");
+  trackPageView({ url: "https://skeleton.th.gl" });
+
   const newLink = NewLink();
   const websiteNav = WebsiteNav();
   const main = createElement(

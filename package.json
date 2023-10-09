@@ -22,7 +22,8 @@
   },
   "dependencies": {
     "electron-squirrel-startup": "1.0.0",
-    "electron-store": "8.1.0"
+    "electron-store": "8.1.0",
+    "plausible-tracker": "0.3.8"
   },
   "config": {
     "forge": {

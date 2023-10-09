@@ -1,5 +1,7 @@
 const { ipcRenderer } = require("electron");
+const { initPlausible, trackPageView } = require("./lib/plausible");
 
+initPlausible("skeleton.th.gl", "https://apps.machens.dev");
 window.addEventListener("DOMContentLoaded", () => {
   ipcRenderer.on("update", (_event, website) => {
     const crop = website.crop || {
@@ -18,6 +20,12 @@ window.addEventListener("DOMContentLoaded", () => {
       document.title = website.name;
     }
     iframe.style = `top: ${-crop.top}px; left: ${-crop.left}px; right: ${-crop.right}px; width: calc(100% + ${widthOffset}px); bottom: ${-crop.bottom}px; top: ${-crop.top}px; height: calc(100% + ${heightOffset}px); border-radius: ${borderRadius}%;`;
+
+    trackPageView({
+      url: `https://skeleton.th.gl/${encodeURIComponent(
+        website.url.replace("https://", "").replace("http://", "")
+      )}`,
+    });
   });
 
   ipcRenderer.send("whoami");
