@@ -2,7 +2,7 @@
 
 Skeleton is a powerful desktop application that enhances your gaming and streaming experience by providing seamless website overlays directly on your screen. It allows you to display any website as an overlay, whether you need a map or guide in-game without ALT+TAB or prefer to watch your favorite stream in a click-throughable window.
 
-![Skeleton in Action](https://user-images.githubusercontent.com/10058950/147827788-3132f6e1-f6da-453e-b4ed-1a1a41d0ed15.mp4)
+https://user-images.githubusercontent.com/10058950/147827788-3132f6e1-f6da-453e-b4ed-1a1a41d0ed15.mp4
 
 ## Features
 
