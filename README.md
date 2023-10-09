@@ -24,7 +24,7 @@ To get started with Skeleton, follow these steps:
 
 ## Contribution
 
-Skeleton is an open-source project, and contributors are highly welcome! If you'd like to get involved and help make Skeleton even better, please join us on our [Discord](https://discord.gg/shrGavf7).
+Skeleton is an open-source project, and contributors are highly welcome! If you'd like to get involved and help make Skeleton even better, please join us on our [Discord](https://discord.gg/NTZu8Px).
 
 ## Development
 
