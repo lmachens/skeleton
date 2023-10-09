@@ -95,6 +95,7 @@ const WebsiteForm = () => {
           cropTop,
           cropBottom,
           opacity,
+          zoom,
           borderRadius,
         } = event.target.elements;
         website.name = name.value;
@@ -122,6 +123,7 @@ const WebsiteForm = () => {
         website.movable = movable.checked;
         website.toggleHotkey = toggleHotkey.value;
         website.opacity = +opacity.value;
+        website.zoom = +zoom.value;
         website.borderRadius = +borderRadius.value;
         if (isNew) {
           addWebsite(website);
@@ -180,6 +182,7 @@ const WebsiteForm = () => {
         value: website.crop?.bottom ?? 0,
         oninput: handleChange,
       }),
+      HotkeyInput({ value: website.toggleHotkey, oninput: handleChange }),
       LabeledInput({
         type: "range",
         text: "Opacity",
@@ -197,6 +200,16 @@ const WebsiteForm = () => {
         min: 0,
         max: 100,
         value: website.borderRadius ?? 0,
+        oninput: handleChange,
+      }),
+      LabeledInput({
+        type: "range",
+        text: "Zoom",
+        name: "zoom",
+        min: 0,
+        max: 5,
+        step: 0.1,
+        value: website.zoom ?? 1,
         oninput: handleChange,
       }),
       LabeledInput({
@@ -241,7 +254,6 @@ const WebsiteForm = () => {
         checked: website.clickThrough ?? false,
         oninput: handleChange,
       }),
-      HotkeyInput({ value: website.toggleHotkey, oninput: handleChange }),
       createElement("input", {
         className: "full",
         type: "submit",

@@ -1,5 +1,6 @@
 const { ipcRenderer } = require("electron");
 const { initPlausible, trackPageView } = require("./lib/plausible");
+const { webFrame } = require("electron");
 
 initPlausible("skeleton.th.gl", "https://apps.machens.dev");
 window.addEventListener("DOMContentLoaded", () => {
@@ -13,6 +14,8 @@ window.addEventListener("DOMContentLoaded", () => {
     const widthOffset = crop.left + crop.right;
     const heightOffset = crop.top + crop.bottom;
     const borderRadius = website.borderRadius ?? 0;
+    const zoom = website.zoom ?? 1;
+    webFrame.setZoomFactor(zoom);
 
     const iframe = document.querySelector("#child");
     if (!iframe.src) {
