@@ -60,6 +60,11 @@ const App = () => {
           websiteNav,
           createElement("button", {
             className: "support",
+            innerText: "Gaming Apps & Tools",
+            onclick: () => shell.openExternal("https://www.th.gl?ref=skeleton"),
+          }),
+          createElement("button", {
+            className: "support",
             innerText: "💙 Open Source",
             onclick: () =>
               shell.openExternal("https://github.com/lmachens/skeleton"),
