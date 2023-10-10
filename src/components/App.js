@@ -60,6 +60,11 @@ const App = () => {
           websiteNav,
           createElement("button", {
             className: "support",
+            innerText: "Join Discord for Support",
+            onclick: () => shell.openExternal("https://discord.gg/NTZu8Px"),
+          }),
+          createElement("button", {
+            className: "support",
             innerText: "Gaming Apps & Tools",
             onclick: () => shell.openExternal("https://www.th.gl?ref=skeleton"),
           }),

@@ -201,8 +201,7 @@ const createWindow = () => {
             delete details.responseHeaders["x-frame-options"];
             delete details.responseHeaders["Content-Security-Policy"];
             details.responseHeaders["content-security-policy"] =
-              "default-src 'self' 'unsafe-inline' * data: blob:";
-
+              "default-src 'self' 'unsafe-inline' 'unsafe-eval' * data: blob:";
             const setCookieHeaders =
               details.responseHeaders["Set-Cookie"] ||
               details.responseHeaders["set-cookie"];
