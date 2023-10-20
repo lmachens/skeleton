@@ -142,7 +142,6 @@ const createWindow = () => {
             webSecurity: false,
           },
         });
-
       websiteWindow.webContents.setWindowOpenHandler((details) => {
         return {
           action: "allow",
