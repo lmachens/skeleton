@@ -8,7 +8,7 @@ const WebsiteNav = require("./WebsiteNav");
 const { shell } = require("electron");
 
 const App = () => {
-  initPlausible("skeleton.th.gl", "https://apps.machens.dev");
+  initPlausible("skeleton.th.gl", "https://metrics.th.gl");
   trackPageView({ url: "https://skeleton.th.gl" });
 
   const newLink = NewLink();
@@ -61,7 +61,7 @@ const App = () => {
           createElement("button", {
             className: "support",
             innerText: "Join Discord for Support",
-            onclick: () => shell.openExternal("https://discord.gg/NTZu8Px"),
+            onclick: () => shell.openExternal("https://th.gl/discord"),
           }),
           createElement("button", {
             className: "support",

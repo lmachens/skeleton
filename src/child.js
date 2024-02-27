@@ -2,7 +2,7 @@ const { ipcRenderer } = require("electron");
 const { initPlausible, trackPageView } = require("./lib/plausible");
 const { webFrame } = require("electron");
 
-initPlausible("skeleton.th.gl", "https://apps.machens.dev");
+initPlausible("skeleton.th.gl", "https://metrics.th.gl");
 window.addEventListener("DOMContentLoaded", () => {
   ipcRenderer.on("update", (_event, website) => {
     const crop = website.crop || {
